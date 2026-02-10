@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/aviran-abramov/truedamage-scraper/issues"
   },
-  "homepage": "https://github.com/aviran-abramov/truedamage-scraper#readme"
+  "homepage": "https://github.com/aviran-abramov/truedamage-scraper#readme",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
 }
