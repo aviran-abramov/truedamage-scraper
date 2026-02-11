@@ -1,3 +1,5 @@
+# TrueDamage Scraper
+
 ## Tech Stack
 - **NodeJS**
 - **Typescript**
