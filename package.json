@@ -4,7 +4,8 @@
   "description": "Web scraping microservice for TrueDamage.gg esports data",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scrape:test": "tsx src/test-scrape.ts"
   },
   "repository": {
     "type": "git",
