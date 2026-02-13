@@ -21,6 +21,12 @@ import { chromium } from 'playwright';
     const teamBName = await teamNames.last().textContent();
     console.log(`Team B: ${teamBName}`);
 
+    // Best of Data
+    const bestOfText = await page.getByText('Best of').textContent();
+    const bestOf = Number(bestOfText?.slice(-1));
+    console.log(`Best of ${bestOf}`);
+
+
     // Finish
     await context.close();
     await browser.close();
