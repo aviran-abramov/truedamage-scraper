@@ -15,16 +15,33 @@ import { chromium } from 'playwright';
     const teamContainers = page.locator('a[href*="/teams/"]');
     const teamNames = teamContainers.locator('.MuiTypography-root.MuiTypography-p4');
 
-    const teamAName = await teamNames.first().textContent();
-    console.log(`Team A: ${teamAName}`); // Gentle Mates
+    const teamANameFinal = await teamNames.first().textContent();
+    console.log(`Team A: ${teamANameFinal}`); // Gentle Mates
 
-    const teamBName = await teamNames.last().textContent();
-    console.log(`Team B: ${teamBName}`);
+    const teamBNameFinal = await teamNames.last().textContent();
+    console.log(`Team B: ${teamBNameFinal}`);
 
     // Best of Data
     const bestOfText = await page.getByText('Best of').textContent();
-    const bestOf = Number(bestOfText?.slice(-1));
-    console.log(`Best of ${bestOf}`);
+    const bestOfFinal = Number(bestOfText?.slice(-1));
+    console.log(`Best of ${bestOfFinal}`);
+
+    // Date, time data
+    const dateTimeText = await page
+        .locator('span.MuiTypography-root.MuiTypography-p2')
+        .filter({ hasText: /\d{2}\s\w{3}\s\d{4}/ })
+        .textContent();
+    const dateTimeArr = dateTimeText?.split(',');
+    let dateFinal, timeFinal;
+    if (dateTimeArr) {
+        dateFinal = dateTimeArr[0];
+        timeFinal = dateTimeArr[1].trim();
+    }
+    console.log(`Date: ${dateFinal}`);
+    console.log(`Time: ${timeFinal}`);
+
+
+
 
 
     // Finish
