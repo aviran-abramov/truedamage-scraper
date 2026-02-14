@@ -24,7 +24,7 @@ import { chromium } from 'playwright';
     // Best of Data
     const bestOfText = await page.getByText('Best of').textContent();
     const bestOfFinal = Number(bestOfText?.slice(-1));
-    console.log(`Best of ${bestOfFinal}`);
+    console.log(`Best of: ${bestOfFinal}`);
 
     // Date, time data
     const dateTimeText = await page
@@ -40,9 +40,20 @@ import { chromium } from 'playwright';
     console.log(`Date: ${dateFinal}`);
     console.log(`Time: ${timeFinal}`);
 
+    // Country data
+    const teamACountryCodeFinal = await teamContainers
+        .first()
+        .locator('img')
+        .last()
+        .getAttribute('alt');
+    console.log(`Team A Country Code: ${teamACountryCodeFinal}`);
 
-
-
+    const teamBCountryCodeFinal = await teamContainers
+        .last()
+        .locator('img')
+        .last()
+        .getAttribute('alt');
+    console.log(`Team B Country Code: ${teamBCountryCodeFinal}`);
 
     // Finish
     await context.close();
