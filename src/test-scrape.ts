@@ -77,6 +77,11 @@ import { chromium } from 'playwright';
         .trim();
     console.log(`Team B Rank: ${teamBRankFinal}`);
 
+    // Tournament name
+    const matchTitle = page.locator('h1.MuiTypography-t2');
+    const tournamentNameFinal = await matchTitle.locator('a.MuiTypography-inherit').textContent();
+    console.log(`Tournament: ${tournamentNameFinal}`);
+
 
     // Finish
     await context.close();
