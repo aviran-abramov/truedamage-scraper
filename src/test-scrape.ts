@@ -10,6 +10,9 @@ import { chromium } from 'playwright';
     // Match page
     await page.goto("https://www.gosugamers.net/counterstrike/tournaments/62664-cct-season-3-european-series-16/matches/640993-prime-vs-hyperspirit");
 
+    // Today's date
+    const dateToday = new Date().toLocaleDateString();
+    console.log(`Date of today: ${dateToday}`);
 
     // Teams Data
     const teamContainers = page.locator('a[href*="/teams/"]');
@@ -54,6 +57,7 @@ import { chromium } from 'playwright';
         .last()
         .getAttribute('alt');
     console.log(`Team B Country Code: ${teamBCountryCodeFinal}`);
+
 
     // Finish
     await context.close();
