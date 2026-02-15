@@ -19,10 +19,10 @@ import { chromium } from 'playwright';
     const teamNames = teamContainers.locator('.MuiTypography-root.MuiTypography-p4');
 
     const teamANameFinal = await teamNames.first().textContent();
-    console.log(`Team A: ${teamANameFinal}`); // Gentle Mates
+    console.log(`Team A Name: ${teamANameFinal}`); // Gentle Mates
 
     const teamBNameFinal = await teamNames.last().textContent();
-    console.log(`Team B: ${teamBNameFinal}`);
+    console.log(`Team B Name: ${teamBNameFinal}`);
 
     // Best of Data
     const bestOfText = await page.getByText('Best of').textContent();
@@ -57,6 +57,25 @@ import { chromium } from 'playwright';
         .last()
         .getAttribute('alt');
     console.log(`Team B Country Code: ${teamBCountryCodeFinal}`);
+
+    // Ranks
+    const teamARank = await teamContainers
+        .first()
+        .getByText('World Ranking')
+        .textContent();
+    const teamARankFinal = teamARank
+        ?.split(":")[1]
+        .trim();
+    console.log(`Team A Rank: ${teamARankFinal}`);
+
+    const teamBRank = await teamContainers
+        .last()
+        .getByText('World Ranking')
+        .textContent();
+    const teamBRankFinal = teamBRank
+        ?.split(":")[1]
+        .trim();
+    console.log(`Team B Rank: ${teamBRankFinal}`);
 
 
     // Finish
