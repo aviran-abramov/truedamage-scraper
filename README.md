@@ -1,5 +1,13 @@
 # Web Scraper for TrueDamage.gg
 
+## Table of Contents
+* [Tech Stack](#tech-stack)  
+<!-- * [Overview](#overview)   -->
+<!-- * [Features](#features)   -->
+<!-- * [Getting Started](#getting-started)  
+* [Environment Variables](#environment-variables)
+* [Architecture](#architecture) -->
+
 ## Tech Stack
 * **[NodeJS](https://nodejs.org/en)** - JavaScript runtime environment
 * **[TypeScript](https://www.typescriptlang.org)** - Type safety superset for JavaScript
