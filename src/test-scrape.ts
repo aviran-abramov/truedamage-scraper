@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 
-const MATCH_URL = "https://www.gosugamers.net/counterstrike/tournaments/62664-cct-season-3-european-series-16/matches/640993-prime-vs-hyperspirit";
+const MATCH_URL = "https://www.gosugamers.net/lol/tournaments/62671-prime-league-prm-1st-division-2026-winter/matches/641287-eintracht-spandau-vs-teamorangegaming";
 
 const launchPage = async () => {
     const browser = await chromium.launch({ headless: false });
@@ -17,6 +17,8 @@ const launchPage = async () => {
     // Main content
     // Match page
     await page.goto(MATCH_URL);
+
+    const matchPreviewCard = page.locator('.MuiCard-root').filter({ hasText: 'Live Score' });
 
     // Today's date
     const dateToday = new Date().toLocaleDateString();
