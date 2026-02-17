@@ -2,11 +2,17 @@ import { chromium } from 'playwright';
 
 const MATCH_URL = "https://www.gosugamers.net/counterstrike/tournaments/62664-cct-season-3-european-series-16/matches/640993-prime-vs-hyperspirit";
 
-(async () => {
-    // Initializing
+const launchPage = async () => {
     const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext();
     const page = await context.newPage();
+
+    return { browser, context, page }
+}
+
+(async () => {
+    // Initializing
+    const { browser, context, page } = await launchPage();
 
     // Main content
     // Match page
