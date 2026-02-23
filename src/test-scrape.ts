@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 
-const MATCH_URL = "https://www.gosugamers.net/lol/tournaments/62671-prime-league-prm-1st-division-2026-winter/matches/641287-eintracht-spandau-vs-teamorangegaming";
+const MATCH_URL = "https://www.gosugamers.net/lol/tournaments/62568-lol-japan-league-ljl-2026-winter/matches/642422-l-guide-gaming-vs-new-meta";
 
 const launchPage = async () => {
     const browser = await chromium.launch({ headless: false });
@@ -18,7 +18,9 @@ const launchPage = async () => {
     // Match page
     await page.goto(MATCH_URL);
 
-    const matchPreviewCard = page.locator('.MuiCard-root').filter({ hasText: 'Live Score' });
+    const matchPreviewContainer = page.locator('.MuiCard-root').filter({ hasText: 'Live Score' });
+    const vsContainer = await matchPreviewContainer.locator('.MuiGrid-grid-lg-3').allInnerTexts()
+
 
     // Today's date
     const dateToday = new Date().toLocaleDateString();
