@@ -18,16 +18,18 @@ const launchPage = async () => {
     // Match page
     await page.goto(MATCH_URL)
 
+    // Containers
     const matchPreviewContainer = page.locator('.MuiCard-root').filter({ hasText: 'Live Score' })
-    const vsContainer = await matchPreviewContainer.locator('.MuiGrid-grid-lg-3').allInnerTexts()
-
+    const teamContainers = page.locator('a[href*="/teams/"]')
+    const teamAContainer = teamContainers.first()
+    const vsContainer = matchPreviewContainer.locator('.MuiGrid-grid-lg-3')
+    const teamBContainer = teamContainers.last()
 
     // Today's date
     const dateToday = new Date().toLocaleDateString()
     console.log(`Date of today: ${dateToday}`)
 
     // Teams Data
-    const teamContainers = page.locator('a[href*="/teams/"]')
     const teamNames = teamContainers.locator('.MuiTypography-root.MuiTypography-p4')
 
     const teamANameFinal = await teamNames.first().textContent()
