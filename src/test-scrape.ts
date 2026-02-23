@@ -29,14 +29,11 @@ const launchPage = async () => {
     const pushDate = new Date().toLocaleDateString()
     console.log(`Push date: ${pushDate}`)
 
-    // Teams Data
-    const teamNames = teamContainers.locator('.MuiTypography-root.MuiTypography-p4')
-
-    const teamANameFinal = await teamNames.first().textContent()
-    console.log(`Team A Name: ${teamANameFinal}`) // Gentle Mates
-
-    const teamBNameFinal = await teamNames.last().textContent()
-    console.log(`Team B Name: ${teamBNameFinal}`)
+    // Team names
+    const teamAName = await teamAContainer.locator('.MuiTypography-p4').textContent()
+    console.log(`Team A Name: ${teamAName}`)
+    const teamBName = await teamBContainer.locator('.MuiTypography-p4').textContent()
+    console.log(`Team B Name: ${teamBName}`)
 
     // Best of Data
     const bestOfText = await page.getByText('Best of').textContent()
