@@ -35,10 +35,10 @@ const launchPage = async () => {
     const teamBName = await teamBContainer.locator('.MuiTypography-p4').textContent()
     console.log(`Team B Name: ${teamBName}`)
 
-    // Best of Data
-    const bestOfText = await page.getByText('Best of').textContent()
-    const bestOfFinal = Number(bestOfText?.slice(-1))
-    console.log(`Best of: ${bestOfFinal}`)
+    // Best of
+    const bestOfData = await vsContainer.locator('.MuiTypography-p3').textContent()
+    const bestOf = bestOfData?.slice(-1);
+    console.log(`Best of: ${bestOf}`)
 
     // Date, time data
     const dateTimeText = await page
