@@ -25,9 +25,9 @@ const launchPage = async () => {
     const vsContainer = matchPreviewContainer.locator('.MuiGrid-grid-lg-3')
     const teamBContainer = teamContainers.last()
 
-    // Today's date
-    const dateToday = new Date().toLocaleDateString()
-    console.log(`Date of today: ${dateToday}`)
+    // Push date
+    const pushDate = new Date().toLocaleDateString()
+    console.log(`Push date: ${pushDate}`)
 
     // Teams Data
     const teamNames = teamContainers.locator('.MuiTypography-root.MuiTypography-p4')
