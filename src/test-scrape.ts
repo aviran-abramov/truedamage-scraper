@@ -40,6 +40,10 @@ const launchPage = async () => {
     const bestOf = bestOfData?.slice(-1);
     console.log(`Best of: ${bestOf}`)
 
+    // Status
+    const status = await vsContainer.locator("p").textContent({ timeout: 500 }).catch(() => "OTHER");
+    console.log(`Status: ${status}`);
+
     // Date, time data
     const dateTimeText = await page
         .locator('span.MuiTypography-root.MuiTypography-p2')
