@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "scrape:test": "tsx src/test-scrape.ts"
+    "scrape": "tsx src/scraper.ts"
   },
   "repository": {
     "type": "git",
