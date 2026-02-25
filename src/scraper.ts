@@ -97,6 +97,21 @@ const launchPage = async () => {
     const tournamentNameFinal = await matchTitle.locator('a.MuiTypography-inherit').textContent()
     console.log(`Tournament: ${tournamentNameFinal}`)
 
+    const matchData = {
+        pushDate,
+        teamAName,
+        teamBName,
+        bestOf,
+        status,
+        date: dateFinal,
+        time: timeFinal,
+        teamACountryCode: teamACountryCodeFinal,
+        teamBCountryCode: teamBCountryCodeFinal,
+        teamARank: teamARankFinal,
+        teamBRank: teamBRankFinal
+    }
+
+    console.log(matchData);
 
     // Finish
     await context.close()
