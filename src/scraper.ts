@@ -31,31 +31,26 @@ async function scrapeMatch() {
 
     // Push date
     const pushDate = new Date().toLocaleDateString();
-    console.log(`Push date: ${pushDate}`);
 
     // Team names
     const teamAName = await teamAContainer
       .locator(".MuiTypography-p4")
       .textContent();
-    console.log(`Team A Name: ${teamAName}`);
     const teamBName = await teamBContainer
       .locator(".MuiTypography-p4")
       .textContent();
-    console.log(`Team B Name: ${teamBName}`);
 
     // Best of
     const bestOfData = await vsContainer
       .locator(".MuiTypography-p3")
       .textContent();
     const bestOf = bestOfData?.slice(-1);
-    console.log(`Best of: ${bestOf}`);
 
     // Status
     const status = await vsContainer
       .locator("p")
       .textContent({ timeout: 500 })
       .catch(() => "OTHER");
-    console.log(`Status: ${status}`);
 
     // Date, time data
     const dateTimeText = await page
@@ -68,8 +63,6 @@ async function scrapeMatch() {
       dateFinal = dateTimeArr[0];
       timeFinal = dateTimeArr[1].trim();
     }
-    console.log(`Date: ${dateFinal}`);
-    console.log(`Time: ${timeFinal}`);
 
     // Country data
     const teamACountryCodeFinal = await teamContainers
@@ -77,14 +70,12 @@ async function scrapeMatch() {
       .locator("img")
       .last()
       .getAttribute("alt");
-    console.log(`Team A Country Code: ${teamACountryCodeFinal}`);
 
     const teamBCountryCodeFinal = await teamContainers
       .last()
       .locator("img")
       .last()
       .getAttribute("alt");
-    console.log(`Team B Country Code: ${teamBCountryCodeFinal}`);
 
     // Ranks
     const teamARank = await teamContainers
@@ -92,21 +83,18 @@ async function scrapeMatch() {
       .getByText("World Ranking")
       .textContent();
     const teamARankFinal = teamARank?.split(":")[1].trim();
-    console.log(`Team A Rank: ${teamARankFinal}`);
 
     const teamBRank = await teamContainers
       .last()
       .getByText("World Ranking")
       .textContent();
     const teamBRankFinal = teamBRank?.split(":")[1].trim();
-    console.log(`Team B Rank: ${teamBRankFinal}`);
 
     // Tournament name
     const matchTitle = page.locator("h1.MuiTypography-t2");
     const tournamentNameFinal = await matchTitle
       .locator("a.MuiTypography-inherit")
       .textContent();
-    console.log(`Tournament: ${tournamentNameFinal}`);
 
     const matchData = {
       pushDate,
