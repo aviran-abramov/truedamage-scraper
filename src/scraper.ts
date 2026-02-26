@@ -1,4 +1,4 @@
-import { chromium } from "playwright";
+import { chromium, Locator } from "playwright";
 
 const MATCH_URL =
   "https://www.gosugamers.net/lol/tournaments/62568-lol-japan-league-ljl-2026-winter/matches/642422-l-guide-gaming-vs-new-meta";
@@ -10,6 +10,65 @@ const launchPage = async () => {
 
   return { browser, context, page };
 };
+
+interface Team {
+  name: string;
+  countryCode: string;
+  rank: string;
+}
+
+async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
+  // Team Containers
+  const teamAContainer = teamContainers.first();
+  const teamBContainer = teamContainers.last();
+
+  // Team names
+  const teamAName = await teamAContainer
+    .locator(".MuiTypography-p4")
+    .textContent();
+  const teamBName = await teamBContainer
+    .locator(".MuiTypography-p4")
+    .textContent();
+
+  // Country data
+  const teamACountryCode = await teamContainers
+    .first()
+    .locator("img")
+    .last()
+    .getAttribute("alt");
+
+  const teamBCountryCode = await teamContainers
+    .last()
+    .locator("img")
+    .last()
+    .getAttribute("alt");
+
+  // Ranks
+  const teamARank = await teamContainers
+    .first()
+    .getByText("World Ranking")
+    .textContent();
+  const teamARankFinal = teamARank?.split(":")[1].trim();
+
+  const teamBRank = await teamContainers
+    .last()
+    .getByText("World Ranking")
+    .textContent();
+  const teamBRankFinal = teamBRank?.split(":")[1].trim();
+
+  return [
+    {
+      name: teamAName || "NOT_FOUND",
+      countryCode: teamACountryCode || "NOT_FOUND",
+      rank: teamARankFinal || "NOT_FOUND",
+    },
+    {
+      name: teamBName || "NOT_FOUND",
+      countryCode: teamBCountryCode || "NOT_FOUND",
+      rank: teamBRankFinal || "NOT_FOUND",
+    },
+  ];
+}
 
 async function scrapeMatch() {
   try {
@@ -25,20 +84,10 @@ async function scrapeMatch() {
       .locator(".MuiCard-root")
       .filter({ hasText: "Live Score" });
     const teamContainers = page.locator('a[href*="/teams/"]');
-    const teamAContainer = teamContainers.first();
     const vsContainer = matchPreviewContainer.locator(".MuiGrid-grid-lg-3");
-    const teamBContainer = teamContainers.last();
 
     // Push date
     const pushDate = new Date().toLocaleDateString();
-
-    // Team names
-    const teamAName = await teamAContainer
-      .locator(".MuiTypography-p4")
-      .textContent();
-    const teamBName = await teamBContainer
-      .locator(".MuiTypography-p4")
-      .textContent();
 
     // Best of
     const bestOfData = await vsContainer
@@ -64,50 +113,26 @@ async function scrapeMatch() {
       timeFinal = dateTimeArr[1].trim();
     }
 
-    // Country data
-    const teamACountryCodeFinal = await teamContainers
-      .first()
-      .locator("img")
-      .last()
-      .getAttribute("alt");
-
-    const teamBCountryCodeFinal = await teamContainers
-      .last()
-      .locator("img")
-      .last()
-      .getAttribute("alt");
-
-    // Ranks
-    const teamARank = await teamContainers
-      .first()
-      .getByText("World Ranking")
-      .textContent();
-    const teamARankFinal = teamARank?.split(":")[1].trim();
-
-    const teamBRank = await teamContainers
-      .last()
-      .getByText("World Ranking")
-      .textContent();
-    const teamBRankFinal = teamBRank?.split(":")[1].trim();
-
     // Tournament name
     const matchTitle = page.locator("h1.MuiTypography-t2");
     const tournamentNameFinal = await matchTitle
       .locator("a.MuiTypography-inherit")
       .textContent();
 
+    const teamsData = await extractTeamData(teamContainers);
+
     const matchData = {
       pushDate,
-      teamAName,
-      teamBName,
+      teamAName: teamsData[0].name,
+      teamBName: teamsData[1].name,
       bestOf,
       status,
       date: dateFinal,
       time: timeFinal,
-      teamACountryCode: teamACountryCodeFinal,
-      teamBCountryCode: teamBCountryCodeFinal,
-      teamARank: teamARankFinal,
-      teamBRank: teamBRankFinal,
+      teamACountryCode: teamsData[0].countryCode,
+      teamBCountryCode: teamsData[1].countryCode,
+      teamARank: teamsData[0].rank,
+      teamBRank: teamsData[1].rank,
     };
 
     console.log(matchData);
