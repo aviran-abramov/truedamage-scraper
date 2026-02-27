@@ -1,6 +1,6 @@
 import { chromium, Locator, Page } from "playwright";
 
-const MATCH_URL =
+const matchUrl =
   "https://www.gosugamers.net/lol/tournaments/62568-lol-japan-league-ljl-2026-winter/matches/642422-l-guide-gaming-vs-new-meta";
 
 const launchPage = async () => {
@@ -133,14 +133,14 @@ type ScrapeMatchResult<T> =
   | { success: true, data: T }
   | { success: false, error: string }
 
-async function scrapeMatch(): Promise<ScrapeMatchResult<Match>> {
+async function scrapeMatch(matchUrl: string): Promise<ScrapeMatchResult<Match>> {
   try {
     // Initializing
     const { browser, context, page } = await launchPage();
 
     // Main content
     // Match page
-    await page.goto(MATCH_URL);
+    await page.goto(matchUrl);
 
     // Containers
     const matchPreviewContainer = page
@@ -192,4 +192,4 @@ async function scrapeMatch(): Promise<ScrapeMatchResult<Match>> {
     };
   }
 }
-scrapeMatch();
+scrapeMatch(matchUrl);
