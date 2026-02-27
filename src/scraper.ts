@@ -102,17 +102,15 @@ async function extractMatchFormat(page: Page): Promise<Format> {
     .filter({ hasText: /\d{2}\s\w{3}\s\d{4}/ })
     .textContent();
   const dateTimeArr = dateTimeText?.split(",");
-  let dateFinal, timeFinal;
-  if (dateTimeArr) {
-    dateFinal = dateTimeArr[0];
-    timeFinal = dateTimeArr[1].trim();
-  }
+
+  const dateFinal = dateTimeArr?.[0] ?? "NOT FOUND";
+  const timeFinal = dateTimeArr?.[1]?.trim() ?? "NOT FOUND";
 
   return {
     bestOf: bestOf || "NOT FOUND",
     status: status || "NOT FOUND",
-    date: dateFinal || "NOT FOUND",
-    time: timeFinal || "NOT FOUND"
+    date: dateFinal,
+    time: timeFinal
   }
 }
 
