@@ -114,6 +114,21 @@ async function extractMatchFormat(page: Page): Promise<Format> {
   }
 }
 
+interface Match {
+  pushDate: string,
+  teamAName: string,
+  teamBName: string,
+  tournament: string,
+  bestOf: string | number,
+  status: string,
+  date: string,
+  time: string,
+  teamACountryCode: string,
+  teamBCountryCode: string,
+  teamARank: string | number,
+  teamBRank: string | number,
+}
+
 async function scrapeMatch() {
   try {
     // Initializing
