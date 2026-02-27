@@ -14,7 +14,7 @@ const launchPage = async () => {
 interface Team {
   name: string;
   countryCode: string;
-  rank: string;
+  rank: number;
 }
 
 async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
@@ -48,24 +48,24 @@ async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
     .first()
     .getByText("World Ranking")
     .textContent();
-  const teamARankFinal = teamARank?.split(":")[1].trim();
+  const teamARankFinal = Number(teamARank?.split(":")[1].trim());
 
   const teamBRank = await teamContainers
     .last()
     .getByText("World Ranking")
     .textContent();
-  const teamBRankFinal = teamBRank?.split(":")[1].trim();
+  const teamBRankFinal = Number(teamBRank?.split(":")[1].trim());
 
   return [
     {
       name: teamAName || "NOT_FOUND",
       countryCode: teamACountryCode || "NOT_FOUND",
-      rank: teamARankFinal || "NOT_FOUND",
+      rank: teamARankFinal,
     },
     {
       name: teamBName || "NOT_FOUND",
       countryCode: teamBCountryCode || "NOT_FOUND",
-      rank: teamBRankFinal || "NOT_FOUND",
+      rank: teamBRankFinal,
     },
   ];
 }
@@ -87,7 +87,7 @@ async function extractMatchFormat(page: Page): Promise<Format> {
   // Best of
   const bestOfData = await vsContainer
     .locator(".MuiTypography-p3")
-    .textContent();
+    .textContent() || "NOT FOUND";
   const bestOf = bestOfData?.slice(-1);
 
   // Status
@@ -133,7 +133,7 @@ type ScrapeMatchResult<T> =
   | { success: true, data: T }
   | { success: false, error: string }
 
-async function scrapeMatch() {
+async function scrapeMatch(): Promise<ScrapeMatchResult<Match>> {
   try {
     // Initializing
     const { browser, context, page } = await launchPage();
@@ -147,7 +147,6 @@ async function scrapeMatch() {
       .locator(".MuiCard-root")
       .filter({ hasText: "Live Score" });
     const teamContainers = page.locator('a[href*="/teams/"]');
-    const vsContainer = matchPreviewContainer.locator(".MuiGrid-grid-lg-3");
 
     // Push date
     const pushDate = new Date().toLocaleDateString();
@@ -156,7 +155,7 @@ async function scrapeMatch() {
     const matchTitle = page.locator("h1.MuiTypography-t2");
     const tournamentNameFinal = await matchTitle
       .locator("a.MuiTypography-inherit")
-      .textContent();
+      .textContent() || "NOT FOUND";
 
     const teamsData = await extractTeamData(teamContainers);
     const matchFormatData = await extractMatchFormat(page);
@@ -172,16 +171,25 @@ async function scrapeMatch() {
       time: matchFormatData.time,
       teamACountryCode: teamsData[0].countryCode,
       teamBCountryCode: teamsData[1].countryCode,
-      teamARank: teamsData[0].rank,
-      teamBRank: teamsData[1].rank,
+      teamARank: teamsData[0].rank || "NOT FOUND",
+      teamBRank: teamsData[1].rank || "NOT FOUND",
     };
 
     console.log(matchData);
     // Finish
     await context.close();
     await browser.close();
+
+    return {
+      success: true,
+      data: matchData
+    };
   } catch (error) {
     console.error(error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "ERROR"
+    };
   }
 }
 scrapeMatch();
