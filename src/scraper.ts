@@ -144,24 +144,11 @@ async function scrapeMatch() {
     const teamsData = await extractTeamData(teamContainers);
     const matchFormatData = await extractMatchFormat(page);
 
-    // const matchData = {
-    //   pushDate,
-    //   teamAName: teamsData[0].name,
-    //   teamBName: teamsData[1].name,
-    //   bestOf,
-    //   status,
-    //   date: dateFinal,
-    //   time: timeFinal,
-    //   teamACountryCode: teamsData[0].countryCode,
-    //   teamBCountryCode: teamsData[1].countryCode,
-    //   teamARank: teamsData[0].rank,
-    //   teamBRank: teamsData[1].rank,
-    // };
-
     const matchData = {
       pushDate,
       teamAName: teamsData[0].name,
       teamBName: teamsData[1].name,
+      tournament: tournamentNameFinal,
       bestOf: matchFormatData.bestOf,
       status: matchFormatData.status,
       date: matchFormatData.date,
