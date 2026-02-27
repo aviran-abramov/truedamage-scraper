@@ -129,6 +129,10 @@ interface Match {
   teamBRank: string | number,
 }
 
+type ScrapeMatchResult<T> =
+  | { success: true, data: T }
+  | { success: false, error: string }
+
 async function scrapeMatch() {
   try {
     // Initializing
