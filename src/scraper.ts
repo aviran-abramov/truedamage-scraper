@@ -1,4 +1,4 @@
-import { chromium, Locator } from "playwright";
+import { chromium, Locator, Page } from "playwright";
 
 const MATCH_URL =
   "https://www.gosugamers.net/lol/tournaments/62568-lol-japan-league-ljl-2026-winter/matches/642422-l-guide-gaming-vs-new-meta";
@@ -70,6 +70,52 @@ async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
   ];
 }
 
+interface Format {
+  bestOf: string;
+  status: string;
+  date: string;
+  time: string;
+}
+
+async function extractMatchFormat(page: Page): Promise<Format> {
+  // Containers
+  const matchPreviewContainer = page
+    .locator(".MuiCard-root")
+    .filter({ hasText: "Live Score" });
+  const vsContainer = matchPreviewContainer.locator(".MuiGrid-grid-lg-3");
+
+  // Best of
+  const bestOfData = await vsContainer
+    .locator(".MuiTypography-p3")
+    .textContent();
+  const bestOf = bestOfData?.slice(-1);
+
+  // Status
+  const status = await vsContainer
+    .locator("p")
+    .textContent({ timeout: 500 })
+    .catch(() => "OTHER");
+
+  // Date, time data
+  const dateTimeText = await page
+    .locator("span.MuiTypography-root.MuiTypography-p2")
+    .filter({ hasText: /\d{2}\s\w{3}\s\d{4}/ })
+    .textContent();
+  const dateTimeArr = dateTimeText?.split(",");
+  let dateFinal, timeFinal;
+  if (dateTimeArr) {
+    dateFinal = dateTimeArr[0];
+    timeFinal = dateTimeArr[1].trim();
+  }
+
+  return {
+    bestOf: bestOf || "NOT FOUND",
+    status: status || "NOT FOUND",
+    date: dateFinal || "NOT FOUND",
+    time: timeFinal || "NOT FOUND"
+  }
+}
+
 async function scrapeMatch() {
   try {
     // Initializing
@@ -89,30 +135,6 @@ async function scrapeMatch() {
     // Push date
     const pushDate = new Date().toLocaleDateString();
 
-    // Best of
-    const bestOfData = await vsContainer
-      .locator(".MuiTypography-p3")
-      .textContent();
-    const bestOf = bestOfData?.slice(-1);
-
-    // Status
-    const status = await vsContainer
-      .locator("p")
-      .textContent({ timeout: 500 })
-      .catch(() => "OTHER");
-
-    // Date, time data
-    const dateTimeText = await page
-      .locator("span.MuiTypography-root.MuiTypography-p2")
-      .filter({ hasText: /\d{2}\s\w{3}\s\d{4}/ })
-      .textContent();
-    const dateTimeArr = dateTimeText?.split(",");
-    let dateFinal, timeFinal;
-    if (dateTimeArr) {
-      dateFinal = dateTimeArr[0];
-      timeFinal = dateTimeArr[1].trim();
-    }
-
     // Tournament name
     const matchTitle = page.locator("h1.MuiTypography-t2");
     const tournamentNameFinal = await matchTitle
@@ -120,15 +142,30 @@ async function scrapeMatch() {
       .textContent();
 
     const teamsData = await extractTeamData(teamContainers);
+    const matchFormatData = await extractMatchFormat(page);
+
+    // const matchData = {
+    //   pushDate,
+    //   teamAName: teamsData[0].name,
+    //   teamBName: teamsData[1].name,
+    //   bestOf,
+    //   status,
+    //   date: dateFinal,
+    //   time: timeFinal,
+    //   teamACountryCode: teamsData[0].countryCode,
+    //   teamBCountryCode: teamsData[1].countryCode,
+    //   teamARank: teamsData[0].rank,
+    //   teamBRank: teamsData[1].rank,
+    // };
 
     const matchData = {
       pushDate,
       teamAName: teamsData[0].name,
       teamBName: teamsData[1].name,
-      bestOf,
-      status,
-      date: dateFinal,
-      time: timeFinal,
+      bestOf: matchFormatData.bestOf,
+      status: matchFormatData.status,
+      date: matchFormatData.date,
+      time: matchFormatData.time,
       teamACountryCode: teamsData[0].countryCode,
       teamBCountryCode: teamsData[1].countryCode,
       teamARank: teamsData[0].rank,
