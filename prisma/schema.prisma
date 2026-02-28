@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Game {
+  id        String   @id
+  name      String   @unique @db.VarChar(255)
+  slug      String   @unique @db.VarChar(255)
+  iconUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  shortName String   @unique @db.VarChar(10)
+  Match     Match[]
+  Team      Team[]
+}
+
+model Match {
+  id                       String   @id
+  date                     String
+  time                     String
+  bestOf                   Int
+  winnerPrediction         String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime
+  gameId                   String
+  teamAId                  String
+  teamBId                  String
+  tournament               String   @db.VarChar(255)
+  Game                     Game     @relation(fields: [gameId], references: [id])
+  Team_Match_teamAIdToTeam Team     @relation("Match_teamAIdToTeam", fields: [teamAId], references: [id])
+  Team_Match_teamBIdToTeam Team     @relation("Match_teamBIdToTeam", fields: [teamBId], references: [id])
+}
+
+model Team {
+  id                        String   @id
+  name                      String   @db.VarChar(255)
+  slug                      String   @unique @db.VarChar(255)
+  countryCode               String?  @db.VarChar(3)
+  countryName               String?  @db.VarChar(255)
+  gameId                    String
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime
+  Match_Match_teamAIdToTeam Match[]  @relation("Match_teamAIdToTeam")
+  Match_Match_teamBIdToTeam Match[]  @relation("Match_teamBIdToTeam")
+  Game                      Game     @relation(fields: [gameId], references: [id])
+
+  @@index([gameId])
+}
+
+model account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model twoFactor {
+  id          String @id
+  secret      String
+  backupCodes String
+  userId      String
+  user        user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([secret])
+  @@index([userId])
+}
+
+model user {
+  id               String      @id
+  name             String
+  email            String      @unique
+  emailVerified    Boolean     @default(false)
+  image            String?
+  role             UserRole    @default(USER)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime
+  twoFactorEnabled Boolean?    @default(false)
+  account          account[]
+  session          session[]
+  twoFactor        twoFactor[]
+}
+
+model verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+
+  @@index([identifier])
+}
+
+enum UserRole {
+  GUEST
+  USER
+  ADMIN
+}

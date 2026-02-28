@@ -1,4 +1,5 @@
 import { chromium, Locator, Page } from "playwright";
+import prisma from "./lib/db";
 
 const matchUrl =
   "https://www.gosugamers.net/lol/tournaments/62568-lol-japan-league-ljl-2026-winter/matches/642422-l-guide-gaming-vs-new-meta";
@@ -85,9 +86,9 @@ async function extractMatchFormat(page: Page): Promise<Format> {
   const vsContainer = matchPreviewContainer.locator(".MuiGrid-grid-lg-3");
 
   // Best of
-  const bestOfData = await vsContainer
-    .locator(".MuiTypography-p3")
-    .textContent() || "NOT FOUND";
+  const bestOfData =
+    (await vsContainer.locator(".MuiTypography-p3").textContent()) ||
+    "NOT FOUND";
   const bestOf = bestOfData?.slice(-1);
 
   // Status
@@ -110,30 +111,32 @@ async function extractMatchFormat(page: Page): Promise<Format> {
     bestOf: bestOf || "NOT FOUND",
     status: status || "NOT FOUND",
     date: dateFinal,
-    time: timeFinal
-  }
+    time: timeFinal,
+  };
 }
 
 interface Match {
-  pushDate: string,
-  teamAName: string,
-  teamBName: string,
-  tournament: string,
-  bestOf: string | number,
-  status: string,
-  date: string,
-  time: string,
-  teamACountryCode: string,
-  teamBCountryCode: string,
-  teamARank: string | number,
-  teamBRank: string | number,
+  pushDate: string;
+  teamAName: string;
+  teamBName: string;
+  tournament: string;
+  bestOf: string | number;
+  status: string;
+  date: string;
+  time: string;
+  teamACountryCode: string;
+  teamBCountryCode: string;
+  teamARank: string | number;
+  teamBRank: string | number;
 }
 
 type ScrapeMatchResult<T> =
-  | { success: true, data: T }
-  | { success: false, error: string }
+  | { success: true; data: T }
+  | { success: false; error: string };
 
-async function scrapeMatch(matchUrl: string): Promise<ScrapeMatchResult<Match>> {
+async function scrapeMatch(
+  matchUrl: string
+): Promise<ScrapeMatchResult<Match>> {
   try {
     // Initializing
     const { browser, context, page } = await launchPage();
@@ -153,9 +156,9 @@ async function scrapeMatch(matchUrl: string): Promise<ScrapeMatchResult<Match>> 
 
     // Tournament name
     const matchTitle = page.locator("h1.MuiTypography-t2");
-    const tournamentNameFinal = await matchTitle
-      .locator("a.MuiTypography-inherit")
-      .textContent() || "NOT FOUND";
+    const tournamentNameFinal =
+      (await matchTitle.locator("a.MuiTypography-inherit").textContent()) ||
+      "NOT FOUND";
 
     const teamsData = await extractTeamData(teamContainers);
     const matchFormatData = await extractMatchFormat(page);
@@ -182,13 +185,13 @@ async function scrapeMatch(matchUrl: string): Promise<ScrapeMatchResult<Match>> 
 
     return {
       success: true,
-      data: matchData
+      data: matchData,
     };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "ERROR"
+      error: error instanceof Error ? error.message : "ERROR",
     };
   }
 }
