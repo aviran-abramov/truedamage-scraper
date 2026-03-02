@@ -169,7 +169,13 @@ async function scrapeMatch(
     const teamsData = await extractTeamData(teamContainers);
     const matchFormatData = await extractMatchFormat(page);
 
-    await scrollDown(page, 5, 3000);
+    await scrollDown(page, 4, 1000);
+
+    const commonMatchLiArr = page
+      .locator("span.MuiTypography-t3")
+      .filter({ hasText: "Encounters" })
+      .locator("xpath=following-sibling::*[1]")
+      .locator("li");
 
     const matchData = {
       pushDate,
