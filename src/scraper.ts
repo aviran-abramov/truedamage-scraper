@@ -114,6 +114,29 @@ async function extractMatchFormat(page: Page): Promise<Format> {
   };
 }
 
+async function extractCommonMatchesScores(page: Page): Promise<string[]> {
+  const commonMatchLiArr = page
+    .locator("span.MuiTypography-t3")
+    .filter({ hasText: "Encounters" })
+    .locator("xpath=following-sibling::*[1]")
+    .locator("li");
+
+  const scores: string[] = [];
+  for (const item of await commonMatchLiArr.all()) {
+    const matchInfo = item
+      .locator(".MuiGrid-grid-xs-12")
+      .nth(1)
+      .locator(".MuiTypography-p5");
+
+    const teamAScore = await matchInfo.first().textContent();
+    const teamBScore = await matchInfo.last().textContent();
+
+    scores.push(`${teamAScore}:${teamBScore}`);
+  }
+
+  return scores;
+}
+
 interface Match {
   pushDate: string;
   teamAName: string;
@@ -172,24 +195,7 @@ async function scrapeMatch(
 
     await scrollDown(page, 4, 1000);
 
-    const commonMatchLiArr = page
-      .locator("span.MuiTypography-t3")
-      .filter({ hasText: "Encounters" })
-      .locator("xpath=following-sibling::*[1]")
-      .locator("li");
-
-    const scores = [];
-    for (const item of await commonMatchLiArr.all()) {
-      const matchInfo = item
-        .locator(".MuiGrid-grid-xs-12")
-        .nth(1)
-        .locator(".MuiTypography-p5");
-
-      const teamAScore = await matchInfo.first().textContent();
-      const teamBScore = await matchInfo.last().textContent();
-
-      scores.push(`${teamAScore}:${teamBScore}`);
-    }
+    const scores = await extractCommonMatchesScores(page);
 
     const matchData = {
       pushDate,
