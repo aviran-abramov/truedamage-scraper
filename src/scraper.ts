@@ -1,8 +1,7 @@
 import { chromium, Locator, Page } from "playwright";
-import prisma from "./lib/db";
 
 const matchUrl =
-  "https://www.gosugamers.net/lol/tournaments/62568-lol-japan-league-ljl-2026-winter/matches/642422-l-guide-gaming-vs-new-meta";
+  "https://www.gosugamers.net/dota2/tournaments/62605-fissure-universe-episode-8/matches/639158-aurora-gaming-vs-1w-team";
 
 const launchPage = async () => {
   const browser = await chromium.launch({ headless: false });
@@ -130,6 +129,13 @@ interface Match {
   teamBRank: string | number;
 }
 
+async function scrollDown(page: Page, repeat: number, delay: number) {
+  for (let i = 0; i < repeat; i++) {
+    await page.waitForTimeout(delay);
+    await page.keyboard.press("Space");
+  }
+}
+
 type ScrapeMatchResult<T> =
   | { success: true; data: T }
   | { success: false; error: string };
@@ -162,6 +168,8 @@ async function scrapeMatch(
 
     const teamsData = await extractTeamData(teamContainers);
     const matchFormatData = await extractMatchFormat(page);
+
+    await scrollDown(page, 5, 3000);
 
     const matchData = {
       pushDate,
