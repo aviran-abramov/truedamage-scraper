@@ -127,6 +127,7 @@ interface Match {
   teamBCountryCode: string;
   teamARank: string | number;
   teamBRank: string | number;
+  scores: string[];
 }
 
 async function scrollDown(page: Page, repeat: number, delay: number) {
@@ -177,6 +178,19 @@ async function scrapeMatch(
       .locator("xpath=following-sibling::*[1]")
       .locator("li");
 
+    const scores = [];
+    for (const item of await commonMatchLiArr.all()) {
+      const matchInfo = item
+        .locator(".MuiGrid-grid-xs-12")
+        .nth(1)
+        .locator(".MuiTypography-p5");
+
+      const teamAScore = await matchInfo.first().textContent();
+      const teamBScore = await matchInfo.last().textContent();
+
+      scores.push(`${teamAScore}:${teamBScore}`);
+    }
+
     const matchData = {
       pushDate,
       teamAName: teamsData[0].name,
@@ -190,6 +204,7 @@ async function scrapeMatch(
       teamBCountryCode: teamsData[1].countryCode,
       teamARank: teamsData[0].rank || "NOT FOUND",
       teamBRank: teamsData[1].rank || "NOT FOUND",
+      scores,
     };
 
     console.log(matchData);
