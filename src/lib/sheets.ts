@@ -16,4 +16,6 @@ export async function useGoogleSheets() {
 
   await doc.loadInfo();
   console.log(`🟢 Google Spreadsheet Loaded - ${doc.title}`);
+
+  const sheet = doc.sheetsById[Number(process.env.GOOGLE_SHEET_ID)];
 }
