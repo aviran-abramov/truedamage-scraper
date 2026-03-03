@@ -1,5 +1,6 @@
 import { chromium, Locator, Page } from "playwright";
 import { useGoogleSheets } from "./lib/sheets";
+import { Format, Match, ScrapeMatchResult, Team } from "./lib/types";
 
 const matchUrl =
   "https://www.gosugamers.net/dota2/tournaments/62605-fissure-universe-episode-8/matches/639158-aurora-gaming-vs-1w-team";
@@ -15,12 +16,6 @@ const launchPage = async () => {
 
   return { browser, context, page };
 };
-
-interface Team {
-  name: string;
-  countryCode: string;
-  rank: number;
-}
 
 async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
   // Team Containers
@@ -73,13 +68,6 @@ async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
       rank: teamBRankFinal,
     },
   ];
-}
-
-interface Format {
-  bestOf: string;
-  status: string;
-  date: string;
-  time: string;
 }
 
 async function extractMatchFormat(page: Page): Promise<Format> {
@@ -142,32 +130,12 @@ async function extractCommonMatchesScores(page: Page): Promise<string[]> {
   return scores;
 }
 
-interface Match {
-  pushDate: string;
-  teamAName: string;
-  teamBName: string;
-  tournament: string;
-  bestOf: string | number;
-  status: string;
-  date: string;
-  time: string;
-  teamACountryCode: string;
-  teamBCountryCode: string;
-  teamARank: string | number;
-  teamBRank: string | number;
-  scores: string[];
-}
-
 async function scrollDown(page: Page, repeat: number, delay: number) {
   for (let i = 0; i < repeat; i++) {
     await page.waitForTimeout(delay);
     await page.keyboard.press("Space");
   }
 }
-
-type ScrapeMatchResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
 
 async function scrapeMatch(
   matchUrl: string
@@ -219,7 +187,7 @@ async function scrapeMatch(
     };
 
     console.log(matchData);
-
+    const sheet = await useGoogleSheets();
     // Finish
     await context.close();
     await browser.close();
