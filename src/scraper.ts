@@ -1,4 +1,5 @@
 import { chromium, Locator, Page } from "playwright";
+import { useGoogleSheets } from "./lib/sheets";
 
 const matchUrl =
   "https://www.gosugamers.net/dota2/tournaments/62605-fissure-universe-episode-8/matches/639158-aurora-gaming-vs-1w-team";
@@ -218,6 +219,7 @@ async function scrapeMatch(
     };
 
     console.log(matchData);
+
     // Finish
     await context.close();
     await browser.close();
