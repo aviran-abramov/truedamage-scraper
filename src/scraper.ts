@@ -4,9 +4,13 @@ const matchUrl =
   "https://www.gosugamers.net/dota2/tournaments/62605-fissure-universe-episode-8/matches/639158-aurora-gaming-vs-1w-team";
 
 const launchPage = async () => {
+  console.log("🟡 Connecting to Chromium browser...");
   const browser = await chromium.launch({ headless: false });
+  console.log("🟢 Success!");
+  console.log("🟡 Creating context and page...");
   const context = await browser.newContext();
   const page = await context.newPage();
+  console.log("🟢 Success!");
 
   return { browser, context, page };
 };
