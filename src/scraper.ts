@@ -187,7 +187,7 @@ async function scrapeMatch(
     };
 
     console.log(matchData);
-    const sheet = await useGoogleSheets();
+    const sheet = await useGoogleSheets(matchData);
     // Finish
     await context.close();
     await browser.close();
