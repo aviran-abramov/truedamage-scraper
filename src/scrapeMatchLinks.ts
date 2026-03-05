@@ -19,10 +19,18 @@ export async function scrapeMatchLinks() {
 
   const matchesContainer = page.locator("div[role='tabpanel']").locator('a.MuiCardActionArea-root');
 
-  const linkLocatorArr = await matchesContainer.all();
+  const matchLocatorArr = await matchesContainer.all();
 
-  for (const link of linkLocatorArr) {
-    console.log(`${baseUrl}${await link.getAttribute('href')}`);
+  for (const match of matchLocatorArr) {
+    const matchUrl = `${baseUrl}${await match.getAttribute('href')}`;
+    const time = await match.locator('p.MuiTypography-body1').last().textContent();
+    const isTimeWithin24hours = time?.includes("h");
+
+    console.log({
+      matchUrl,
+      time,
+      isTimeWithin24hours
+    });
   }
 
   // Finish
