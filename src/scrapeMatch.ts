@@ -138,7 +138,7 @@ async function scrollDown(page: Page, repeat: number, delay: number) {
   }
 }
 
-async function scrapeMatch(
+export async function scrapeMatch(
   matchUrl: string
 ): Promise<ScrapeMatchResult<Match>> {
   try {
@@ -202,4 +202,3 @@ async function scrapeMatch(
     };
   }
 }
-scrapeMatch(matchUrl);
