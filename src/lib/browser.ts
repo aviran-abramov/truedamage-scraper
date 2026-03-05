@@ -1,13 +1,13 @@
 import { chromium } from "playwright";
 
-export const launchPage = async (matchUrl: string) => {
+export const launchPage = async (url: string) => {
   console.log("🟡 Connecting to Chromium browser...");
   const browser = await chromium.launch({ headless: false });
   console.log("🟢 Success!");
   console.log("🟡 Creating context and page...");
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.goto(matchUrl);
+  await page.goto(url);
   console.log("🟢 Success!");
 
   return { browser, context, page };
