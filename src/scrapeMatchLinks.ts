@@ -16,6 +16,13 @@ export async function scrapeMatchLinks() {
   const matchListIndicator = page.locator('span.MuiTypography-p3').first();
   await matchListIndicator.waitFor();
 
+  const matchesContainer = page.locator("div[role='tabpanel']").locator('a.MuiCardActionArea-root');
+
+  const linkLocatorArr = await matchesContainer.all();
+
+  for (const link of linkLocatorArr) {
+    console.log(`https://gosugamers.net${await link.getAttribute('href')}`);
+  }
 
   // Finish
   await context.close();
