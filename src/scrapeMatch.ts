@@ -5,13 +5,14 @@ import { Format, Match, ScrapeMatchResult, Team } from "./lib/types";
 const matchUrl =
   "https://www.gosugamers.net/dota2/tournaments/62605-fissure-universe-episode-8/matches/639158-aurora-gaming-vs-1w-team";
 
-const launchPage = async () => {
+const launchPage = async (matchUrl: string) => {
   console.log("🟡 Connecting to Chromium browser...");
   const browser = await chromium.launch({ headless: false });
   console.log("🟢 Success!");
   console.log("🟡 Creating context and page...");
   const context = await browser.newContext();
   const page = await context.newPage();
+  await page.goto(matchUrl);
   console.log("🟢 Success!");
 
   return { browser, context, page };
@@ -142,12 +143,9 @@ async function scrapeMatch(
 ): Promise<ScrapeMatchResult<Match>> {
   try {
     // Initializing
-    const { browser, context, page } = await launchPage();
+    const { browser, context, page } = await launchPage(matchUrl);
 
     // Main content
-    // Match page
-    await page.goto(matchUrl);
-
     // Containers
     const matchPreviewContainer = page
       .locator(".MuiCard-root")
