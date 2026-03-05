@@ -7,6 +7,7 @@ import { launchPage } from "./lib/browser";
 // 5. Add rows to the Google SpreadSheet
 // 6. Go to the next page and repeat 4,5 if needed
 
+const baseUrl = "https://gosugamers.net";
 const matchesUrl = "https://www.gosugamers.net/matches";
 
 export async function scrapeMatchLinks() {
@@ -21,7 +22,7 @@ export async function scrapeMatchLinks() {
   const linkLocatorArr = await matchesContainer.all();
 
   for (const link of linkLocatorArr) {
-    console.log(`https://gosugamers.net${await link.getAttribute('href')}`);
+    console.log(`${baseUrl}${await link.getAttribute('href')}`);
   }
 
   // Finish
