@@ -7,11 +7,15 @@ import { launchPage } from "./lib/browser";
 // 5. Add rows to the Google SpreadSheet
 // 6. Go to the next page and repeat 4,5 if needed
 
-const matchUrl = "https://www.gosugamers.net/matches";
+const matchUrl = "https://www.gosugamers.net/matches?pageNo=3";
 
 export async function scrapeMatchLinks() {
   // Initialize
   const { browser, context, page } = await launchPage(matchUrl);
+
+  const matchListIndicator = page.locator('span.MuiTypography-p3').first();
+  await matchListIndicator.waitFor();
+
 
   // Finish
   await context.close();
