@@ -1,5 +1,5 @@
 import { Locator, Page } from "playwright";
-import { useGoogleSheets } from "../lib/sheets";
+import { getSheet } from "../lib/sheets";
 import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { launchPage } from "../lib/browser";
 
@@ -170,7 +170,7 @@ export async function scrapeMatch(
     };
 
     console.log(matchData);
-    const sheet = await useGoogleSheets(matchData);
+    const sheet = await getSheet(matchData);
     // Finish
     await context.close();
     await browser.close();

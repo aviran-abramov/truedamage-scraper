@@ -3,7 +3,7 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
 import { Match } from "./types";
 
-export async function useGoogleSheets(matchData: Match) {
+export async function getSheet(matchData: Match) {
   const serviceAccountAuth = new JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     key: process.env.GOOGLE_PRIVATE_KEY,
