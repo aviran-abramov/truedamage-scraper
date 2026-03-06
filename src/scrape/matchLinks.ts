@@ -1,5 +1,4 @@
 import { launchPage } from "../lib/browser";
-import { getSheet } from "../lib/sheets";
 
 // Goals
 // 1. Go to https://www.gosugamers.net/matches
@@ -9,7 +8,7 @@ import { getSheet } from "../lib/sheets";
 // 6. Go to the next page and repeat 4,5 if needed
 
 const baseUrl = "https://gosugamers.net";
-const matchesUrl = "https://www.gosugamers.net/matches?pageNo=7";
+const matchesUrl = "https://www.gosugamers.net/matches";
 
 export async function scrapeMatchLinks() {
   // Initialize
@@ -43,15 +42,16 @@ export async function scrapeMatchLinks() {
 
   const finalArr = matchesArr.map((match) => match?.url);
 
-  if (finalArr.length === 0) {
-    return null;
-  }
-  console.log(`Match links extracted. ${finalArr.length} matches found.`);
-  return finalArr;
-
   // TODO: Check if 0m means 1h 0m or just 1h in upcoming time
 
   // Finish
   await context.close();
   await browser.close();
+
+  if (finalArr.length === 0) {
+    return null;
+  }
+  console.log(`Match links extracted. ${finalArr.length} matches found.`);
+
+  return finalArr;
 }
