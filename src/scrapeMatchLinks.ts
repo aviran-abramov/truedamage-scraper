@@ -14,24 +14,54 @@ export async function scrapeMatchLinks() {
   // Initialize
   const { browser, context, page } = await launchPage(matchesUrl);
 
-  const matchListIndicator = page.locator('span.MuiTypography-p3').first();
+  const matchListIndicator = page.locator("span.MuiTypography-p3").first();
   await matchListIndicator.waitFor();
 
-  const matchesContainer = page.locator("div[role='tabpanel']").locator('a.MuiCardActionArea-root');
+  const matchesContainer = page
+    .locator("div[role='tabpanel']")
+    .locator("a.MuiCardActionArea-root");
 
   const matchLocatorArr = await matchesContainer.all();
 
-  for (const match of matchLocatorArr) {
-    const matchUrl = `${baseUrl}${await match.getAttribute('href')}`;
-    const time = await match.locator('p.MuiTypography-body1').last().textContent();
-    const isTimeWithin24hours = time?.includes("h");
+  const matchesArr = (
+    await Promise.all(
+      matchLocatorArr.map(async (match) => {
+        const url = `${baseUrl}${await match.getAttribute("href")}`;
+        const time = await match
+          .locator("p.MuiTypography-body1")
+          .last()
+          .textContent();
+        const isTimeWithin24hours = time?.includes("h");
 
-    console.log({
-      matchUrl,
-      time,
-      isTimeWithin24hours
-    });
-  }
+        if (isTimeWithin24hours) {
+          return { url, time };
+        }
+      })
+    )
+  ).filter(Boolean);
+
+  console.log(matchesArr);
+
+  // for (const match of matchLocatorArr) {
+  //   const url = `${baseUrl}${await match.getAttribute("href")}`;
+  //   const time = await match
+  //     .locator("p.MuiTypography-body1")
+  //     .last()
+  //     .textContent();
+  //   const isTimeWithin24hours = time?.includes("h");
+
+  //   const matchData = {
+  //     url,
+  //     time,
+  //     isTimeWithin24hours,
+  //   };
+
+  //   console.log({
+  //     matchUrl,
+  //     time,
+  //     isTimeWithin24hours,
+  //   });
+  // }
 
   // Finish
   await context.close();
