@@ -41,20 +41,15 @@ export async function scrapeMatchLinks() {
     )
   ).filter(Boolean);
 
-  const sheet = await getSheet();
-  if (matchesArr.length > 0) {
-    for (const match of matchesArr) {
-      await sheet.addRow({
-        "Push Date": new Date().toLocaleDateString(),
-        "Added Url?": true,
-        "Match Url": match!.url,
-      });
-    }
-  }
+  const finalArr = matchesArr.map((match) => match?.url);
 
-  if (matchesArr.length === 0) {
-    console.log("No upcoming matches found");
+  if (finalArr.length === 0) {
+    return null;
   }
+  console.log(`Match links extracted. ${finalArr.length} matches found.`);
+  return finalArr;
+
+  // TODO: Check if 0m means 1h 0m or just 1h in upcoming time
 
   // Finish
   await context.close();
