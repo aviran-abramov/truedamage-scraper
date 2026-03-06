@@ -1,4 +1,4 @@
-import { launchPage } from "../lib/browser";
+import { closePage, launchPage } from "../lib/browser";
 
 // Goals
 // 1. Go to https://www.gosugamers.net/matches
@@ -45,8 +45,7 @@ export async function scrapeMatchLinks() {
   // TODO: Check if 0m means 1h 0m or just 1h in upcoming time
 
   // Finish
-  await context.close();
-  await browser.close();
+  await closePage(context, browser);
 
   if (finalArr.length === 0) {
     return null;

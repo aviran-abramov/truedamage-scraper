@@ -1,7 +1,7 @@
 import { Locator, Page } from "playwright";
 import { getSheet } from "../lib/sheets";
 import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
-import { launchPage } from "../lib/browser";
+import { closePage, launchPage } from "../lib/browser";
 
 async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
   // Team Containers
@@ -179,8 +179,7 @@ export async function scrapeMatch(
     });
 
     // Finish
-    await context.close();
-    await browser.close();
+    await closePage(context, browser);
 
     return {
       success: true,

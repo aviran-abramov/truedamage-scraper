@@ -1,4 +1,4 @@
-import { chromium } from "playwright";
+import { Browser, BrowserContext, chromium } from "playwright";
 
 export const launchPage = async (url: string) => {
   console.log("🟡 Connecting to Chromium browser...");
@@ -11,4 +11,9 @@ export const launchPage = async (url: string) => {
   console.log("🟢 Success!");
 
   return { browser, context, page };
+};
+
+export const closePage = async (context: BrowserContext, browser: Browser) => {
+  await context.close();
+  await browser.close();
 };
