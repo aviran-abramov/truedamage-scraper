@@ -2,6 +2,7 @@ import { Locator, Page } from "playwright";
 import { getSheet } from "../lib/sheets";
 import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { closePage, launchPage } from "../lib/browser";
+import { scrollDown } from "../lib/pageUtils";
 
 async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
   // Team Containers
@@ -114,13 +115,6 @@ async function extractCommonMatchesScores(page: Page): Promise<string[]> {
   }
 
   return scores;
-}
-
-async function scrollDown(page: Page, repeat: number, delay: number) {
-  for (let i = 0; i < repeat; i++) {
-    await page.waitForTimeout(delay);
-    await page.keyboard.press("Space");
-  }
 }
 
 export async function scrapeMatch(
