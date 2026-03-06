@@ -1,4 +1,5 @@
 import { closePage, launchPage } from "../lib/browser";
+import { scrollDown } from "../lib/pageUtils";
 
 // Goals
 // 1. Go to https://www.gosugamers.net/matches
@@ -42,15 +43,24 @@ export async function scrapeMatchLinks() {
 
   const finalArr = matchesArr.map((match) => match?.url);
 
+  const pagination = page.locator("nav[aria-label='pagination navigation']");
+  const paginationNextPageButton = pagination.locator(
+    "button[aria-label='Go to next page']"
+  );
+
+  scrollDown(page, 2, 1500);
+  await paginationNextPageButton.click();
+  await page.waitForLoadState("networkidle");
+
   // TODO: Check if 0m means 1h 0m or just 1h in upcoming time
 
   // Finish
-  await closePage(context, browser);
+  // await closePage(context, browser);
 
-  if (finalArr.length === 0) {
-    return null;
-  }
+  // if (finalArr.length === 0) {
+  //   return null;
+  // }
   console.log(`Match links extracted. ${finalArr.length} matches found.`);
 
-  return finalArr;
+  // return finalArr;
 }
