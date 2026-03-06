@@ -1,4 +1,5 @@
 import { launchPage } from "../lib/browser";
+import { getSheet } from "../lib/sheets";
 
 // Goals
 // 1. Go to https://www.gosugamers.net/matches
@@ -8,7 +9,7 @@ import { launchPage } from "../lib/browser";
 // 6. Go to the next page and repeat 4,5 if needed
 
 const baseUrl = "https://gosugamers.net";
-const matchesUrl = "https://www.gosugamers.net/matches";
+const matchesUrl = "https://www.gosugamers.net/matches?pageNo=7";
 
 export async function scrapeMatchLinks() {
   // Initialize
@@ -31,7 +32,7 @@ export async function scrapeMatchLinks() {
           .locator("p.MuiTypography-body1")
           .last()
           .textContent();
-        const isTimeWithin24hours = time?.includes("h");
+        const isTimeWithin24hours = time?.includes("h") && time?.includes("m");
 
         if (isTimeWithin24hours) {
           return { url, time };
@@ -40,28 +41,18 @@ export async function scrapeMatchLinks() {
     )
   ).filter(Boolean);
 
-  console.log(matchesArr);
+  const sheet = await getSheet();
+  if (matchesArr.length > 0) {
+    for (const match of matchesArr) {
+      await sheet.addRow({
+        "Match Url": match!.url,
+      });
+    }
+  }
 
-  // for (const match of matchLocatorArr) {
-  //   const url = `${baseUrl}${await match.getAttribute("href")}`;
-  //   const time = await match
-  //     .locator("p.MuiTypography-body1")
-  //     .last()
-  //     .textContent();
-  //   const isTimeWithin24hours = time?.includes("h");
-
-  //   const matchData = {
-  //     url,
-  //     time,
-  //     isTimeWithin24hours,
-  //   };
-
-  //   console.log({
-  //     matchUrl,
-  //     time,
-  //     isTimeWithin24hours,
-  //   });
-  // }
+  if (matchesArr.length === 0) {
+    console.log("No upcoming matches found");
+  }
 
   // Finish
   await context.close();
