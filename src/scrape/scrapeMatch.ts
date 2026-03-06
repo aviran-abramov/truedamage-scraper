@@ -1,7 +1,7 @@
-import { chromium, Locator, Page } from "playwright";
-import { useGoogleSheets } from "./lib/sheets";
-import { Format, Match, ScrapeMatchResult, Team } from "./lib/types";
-import { launchPage } from "./lib/browser";
+import { Locator, Page } from "playwright";
+import { useGoogleSheets } from "../lib/sheets";
+import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
+import { launchPage } from "../lib/browser";
 
 async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
   // Team Containers

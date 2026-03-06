@@ -1,4 +1,4 @@
-import { launchPage } from "./lib/browser";
+import { launchPage } from "../lib/browser";
 
 // Goals
 // 1. Go to https://www.gosugamers.net/matches
