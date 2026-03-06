@@ -131,10 +131,6 @@ export async function scrapeMatch(
     const { browser, context, page } = await launchPage(matchUrl);
 
     // Main content
-    // Containers
-    const matchPreviewContainer = page
-      .locator(".MuiCard-root")
-      .filter({ hasText: "Live Score" });
     const teamContainers = page.locator('a[href*="/teams/"]');
 
     // Tournament name
