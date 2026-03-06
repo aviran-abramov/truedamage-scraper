@@ -12,7 +12,6 @@ export interface Format {
 }
 
 export interface Match {
-  pushDate: string;
   teamAName: string;
   teamBName: string;
   tournament: string;

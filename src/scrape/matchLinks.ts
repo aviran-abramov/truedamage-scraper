@@ -45,6 +45,7 @@ export async function scrapeMatchLinks() {
   if (matchesArr.length > 0) {
     for (const match of matchesArr) {
       await sheet.addRow({
+        "Push Date": new Date().toLocaleDateString(),
         "Added Url?": true,
         "Match Url": match!.url,
       });

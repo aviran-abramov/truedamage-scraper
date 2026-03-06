@@ -137,9 +137,6 @@ export async function scrapeMatch(
       .filter({ hasText: "Live Score" });
     const teamContainers = page.locator('a[href*="/teams/"]');
 
-    // Push date
-    const pushDate = new Date().toLocaleDateString();
-
     // Tournament name
     const matchTitle = page.locator("h1.MuiTypography-t2");
     const tournamentNameFinal =
@@ -154,7 +151,6 @@ export async function scrapeMatch(
     const scores = await extractCommonMatchesScores(page);
 
     const matchData = {
-      pushDate,
       teamAName: teamsData[0].name,
       teamBName: teamsData[1].name,
       tournament: tournamentNameFinal,
@@ -172,7 +168,6 @@ export async function scrapeMatch(
     console.log(matchData);
     const sheet = await getSheet();
     await sheet.addRow({
-      "Push Date": matchData.pushDate,
       "Team A Name": matchData.teamAName,
       "Team B Name": matchData.teamBName,
       Tournament: matchData.tournament,
