@@ -170,7 +170,23 @@ export async function scrapeMatch(
     };
 
     console.log(matchData);
-    const sheet = await getSheet(matchData);
+    const sheet = await getSheet();
+    await sheet.addRow({
+      "Push Date": matchData.pushDate,
+      "Team A Name": matchData.teamAName,
+      "Team B Name": matchData.teamBName,
+      Tournament: matchData.tournament,
+      "Best Of": matchData.bestOf,
+      Status: matchData.status,
+      Date: matchData.date,
+      Time: matchData.time,
+      "Team A Country Code": matchData.teamACountryCode,
+      "Team B Country Code": matchData.teamBCountryCode,
+      "Team A Rank": matchData.teamARank,
+      "Team B Rank": matchData.teamBRank,
+      Scores: matchData.scores.join(", "),
+    });
+
     // Finish
     await context.close();
     await browser.close();
