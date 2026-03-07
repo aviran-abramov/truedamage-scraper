@@ -26,7 +26,9 @@ export async function scrapeMatchLinks() {
 
   await scrollDown(page, 2, 1500);
   await paginationNextPageButton.click();
-  await page.waitForLoadState("networkidle");
+  // await page.waitForLoadState("networkidle"); worked and moved to page 2
+  const matchListIndicator = page.locator("span.MuiTypography-p3").first();
+  await matchListIndicator.waitFor();
 
   await closePage(context, browser);
 
