@@ -6,6 +6,7 @@ const matchUrl =
 
 async function main() {
   // await scrapeMatch(matchUrl);
-  await scrapeMatchLinks();
+  const urls = await scrapeMatchLinks();
+  console.log(urls);
 }
 main();
