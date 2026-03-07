@@ -4,6 +4,77 @@ import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { closePage, launchPage } from "../lib/browser";
 import { scrollDown } from "../lib/pageUtils";
 
+export async function scrapeMatch(
+  matchUrl: string
+): Promise<ScrapeMatchResult<Match>> {
+  try {
+    // Initializing
+    const { browser, context, page } = await launchPage(matchUrl);
+
+    // Main content
+    const teamContainers = page.locator('a[href*="/teams/"]');
+
+    // Tournament name
+    const matchTitle = page.locator("h1.MuiTypography-t2");
+    const tournamentNameFinal =
+      (await matchTitle.locator("a.MuiTypography-inherit").textContent()) ||
+      "NOT FOUND";
+
+    const teamsData = await extractTeamData(teamContainers);
+    const matchFormatData = await extractMatchFormat(page);
+
+    await scrollDown(page, 4, 1000);
+
+    const scores = await extractCommonMatchesScores(page);
+
+    const matchData = {
+      teamAName: teamsData[0].name,
+      teamBName: teamsData[1].name,
+      tournament: tournamentNameFinal,
+      bestOf: matchFormatData.bestOf,
+      status: matchFormatData.status,
+      date: matchFormatData.date,
+      time: matchFormatData.time,
+      teamACountryCode: teamsData[0].countryCode,
+      teamBCountryCode: teamsData[1].countryCode,
+      teamARank: teamsData[0].rank || "NOT FOUND",
+      teamBRank: teamsData[1].rank || "NOT FOUND",
+      scores,
+    };
+
+    console.log(matchData);
+    const sheet = await getSheet();
+    await sheet.addRow({
+      "Team A Name": matchData.teamAName,
+      "Team B Name": matchData.teamBName,
+      Tournament: matchData.tournament,
+      "Best Of": matchData.bestOf,
+      Status: matchData.status,
+      Date: matchData.date,
+      Time: matchData.time,
+      "Team A Country Code": matchData.teamACountryCode,
+      "Team B Country Code": matchData.teamBCountryCode,
+      "Team A Rank": matchData.teamARank,
+      "Team B Rank": matchData.teamBRank,
+      Scores: matchData.scores.join(", "),
+    });
+
+    // Finish
+    await closePage(context, browser);
+
+    return {
+      success: true,
+      data: matchData,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "ERROR",
+    };
+  }
+}
+
 async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
   // Team Containers
   const teamAContainer = teamContainers.first();
@@ -115,75 +186,4 @@ async function extractCommonMatchesScores(page: Page): Promise<string[]> {
   }
 
   return scores;
-}
-
-export async function scrapeMatch(
-  matchUrl: string
-): Promise<ScrapeMatchResult<Match>> {
-  try {
-    // Initializing
-    const { browser, context, page } = await launchPage(matchUrl);
-
-    // Main content
-    const teamContainers = page.locator('a[href*="/teams/"]');
-
-    // Tournament name
-    const matchTitle = page.locator("h1.MuiTypography-t2");
-    const tournamentNameFinal =
-      (await matchTitle.locator("a.MuiTypography-inherit").textContent()) ||
-      "NOT FOUND";
-
-    const teamsData = await extractTeamData(teamContainers);
-    const matchFormatData = await extractMatchFormat(page);
-
-    await scrollDown(page, 4, 1000);
-
-    const scores = await extractCommonMatchesScores(page);
-
-    const matchData = {
-      teamAName: teamsData[0].name,
-      teamBName: teamsData[1].name,
-      tournament: tournamentNameFinal,
-      bestOf: matchFormatData.bestOf,
-      status: matchFormatData.status,
-      date: matchFormatData.date,
-      time: matchFormatData.time,
-      teamACountryCode: teamsData[0].countryCode,
-      teamBCountryCode: teamsData[1].countryCode,
-      teamARank: teamsData[0].rank || "NOT FOUND",
-      teamBRank: teamsData[1].rank || "NOT FOUND",
-      scores,
-    };
-
-    console.log(matchData);
-    const sheet = await getSheet();
-    await sheet.addRow({
-      "Team A Name": matchData.teamAName,
-      "Team B Name": matchData.teamBName,
-      Tournament: matchData.tournament,
-      "Best Of": matchData.bestOf,
-      Status: matchData.status,
-      Date: matchData.date,
-      Time: matchData.time,
-      "Team A Country Code": matchData.teamACountryCode,
-      "Team B Country Code": matchData.teamBCountryCode,
-      "Team A Rank": matchData.teamARank,
-      "Team B Rank": matchData.teamBRank,
-      Scores: matchData.scores.join(", "),
-    });
-
-    // Finish
-    await closePage(context, browser);
-
-    return {
-      success: true,
-      data: matchData,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "ERROR",
-    };
-  }
 }
