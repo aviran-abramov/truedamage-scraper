@@ -17,7 +17,7 @@ export default async function scrapeMatchLinks() {
   // Initialize
   const { browser, context, page } = await launchPage(matchesUrl);
 
-  const urls = await loadUrls(page);
+  const urls = await loadMatchLinks(page);
   await goToNextPage(page);
   await closePage(context, browser);
 
@@ -31,7 +31,8 @@ export default async function scrapeMatchLinks() {
   return urls;
 }
 
-async function loadUrls(page: Page) {
+async function loadMatchLinks(page: Page) {
+  // Wait till page fully loads
   const matchListIndicator = page.locator("span.MuiTypography-p3").first();
   await matchListIndicator.waitFor();
 
