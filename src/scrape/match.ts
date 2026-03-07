@@ -4,7 +4,7 @@ import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { closePage, launchPage } from "../lib/browser";
 import { scrollDown } from "../lib/pageUtils";
 
-export async function scrapeMatch(
+export default async function scrapeMatch(
   matchUrl: string
 ): Promise<ScrapeMatchResult<Match>> {
   try {

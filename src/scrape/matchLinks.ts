@@ -13,7 +13,7 @@ import { scrollDown } from "../lib/pageUtils";
 const baseUrl = "https://gosugamers.net";
 const matchesUrl = "https://www.gosugamers.net/matches";
 
-export async function scrapeMatchLinks() {
+export default async function scrapeMatchLinks() {
   // Initialize
   const { browser, context, page } = await launchPage(matchesUrl);
 
