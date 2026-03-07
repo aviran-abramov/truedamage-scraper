@@ -1,12 +1,13 @@
-import { closePage, launchPage } from "../lib/browser";
+import { launchPage } from "../lib/browser";
 import { scrollDown } from "../lib/pageUtils";
 
-// Goals
-// 1. Go to https://www.gosugamers.net/matches
-// 2. Extract links
-// 4. Get games with time left & time is less than 1 day
-// 5. Add rows to the Google SpreadSheet
-// 6. Go to the next page and repeat 4,5 if needed
+// TODOS
+
+// 1.
+// Check if 0m means 1h 0m or just 1h in upcoming time
+
+// 2.
+// Loop pages to load urls, stop when link.time does not show live | time and does not have the letter d
 
 const baseUrl = "https://gosugamers.net";
 const matchesUrl = "https://www.gosugamers.net/matches";
@@ -48,11 +49,9 @@ export async function scrapeMatchLinks() {
     "button[aria-label='Go to next page']"
   );
 
-  scrollDown(page, 2, 1500);
+  await scrollDown(page, 2, 1500);
   await paginationNextPageButton.click();
   await page.waitForLoadState("networkidle");
-
-  // TODO: Check if 0m means 1h 0m or just 1h in upcoming time
 
   // Finish
   // await closePage(context, browser);
