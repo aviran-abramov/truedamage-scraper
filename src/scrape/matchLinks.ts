@@ -18,19 +18,8 @@ export default async function scrapeMatchLinks() {
   const { browser, context, page } = await launchPage(matchesUrl);
 
   const urls = await loadUrls(page);
-
-  const pagination = page.locator("nav[aria-label='pagination navigation']");
-  const paginationNextPageButton = pagination.locator(
-    "button[aria-label='Go to next page']"
-  );
-
-  await scrollDown(page, 2, 1500);
-  await paginationNextPageButton.click();
-  // await page.waitForLoadState("networkidle"); worked and moved to page 2
-  const matchListIndicator = page.locator("span.MuiTypography-p3").first();
-  await matchListIndicator.waitFor();
-
-  await closePage(context, browser);
+  await goToNextPage(page);
+  // await closePage(context, browser);
 
   if (urls.length === 0) {
     console.log(`No upcoming matches found within 24 hours`);
@@ -72,3 +61,20 @@ async function loadUrls(page: Page) {
 
   return matchesArr.map((match) => match?.url);
 };
+
+async function goToNextPage(page: Page) {
+  const pagination = page.locator("nav[aria-label='pagination navigation']");
+  const paginationNextPageButton = pagination.locator(
+    "button[aria-label='Go to next page']"
+  );
+
+  try {
+    await scrollDown(page, 2, 1500);
+    await paginationNextPageButton.click();
+    // await page.waitForLoadState("networkidle"); worked and moved to page 2
+    const matchListIndicator = page.locator("span.MuiTypography-p3").first();
+    await matchListIndicator.waitFor();
+  } catch (error) {
+    console.log(error);
+  }
+}
