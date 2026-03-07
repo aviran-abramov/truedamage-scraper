@@ -19,14 +19,13 @@ export default async function scrapeMatchLinks() {
 
   const urls = await loadUrls(page);
   await goToNextPage(page);
-  // await closePage(context, browser);
+  await closePage(context, browser);
 
   if (urls.length === 0) {
     console.log(`No upcoming matches found within 24 hours`);
-    return null;
+    return [];
   }
 
-  // Finish
   console.log(`Match links extracted. ${urls.length} matches found.`);
 
   return urls;
