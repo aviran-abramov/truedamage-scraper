@@ -19,9 +19,10 @@ export default async function scrapeMatchLinks() {
 
   const urls: string[] = [];
 
-  const currentPageUrls = await loadMatchLinks(page);
-  urls.push(...currentPageUrls);
+  const currentPage = await loadMatchLinks(page);
+  urls.push(...currentPage.urls);
   await goToNextPage(page);
+
   await closePage(context, browser);
 
   if (urls.length === 0) {
@@ -45,7 +46,7 @@ async function loadMatchLinks(page: Page) {
 
   const matchLocatorArr = await matchesContainer.all();
 
-  const matchesArr = (
+  const allMatchesData = (
     await Promise.all(
       matchLocatorArr.map(async (match) => {
         const url = `${baseUrl}${await match.getAttribute("href")}`;
@@ -53,16 +54,18 @@ async function loadMatchLinks(page: Page) {
           .locator("p.MuiTypography-body1")
           .last()
           .textContent();
-        const isTimeWithin24hours = time?.includes("h") && time?.includes("m");
 
-        if (isTimeWithin24hours) {
-          return { url, time };
-        }
+        return { url, time };
       })
     )
-  ).filter(Boolean);
+  );
 
-  return matchesArr.map((match) => match!.url);
+  const shouldStop = allMatchesData.some(match => match.time?.includes("d"));
+
+  return {
+    urls: allMatchesData.map((match) => match!.url),
+    shouldStop
+  }
 };
 
 async function goToNextPage(page: Page) {
