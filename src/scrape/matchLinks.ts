@@ -19,8 +19,8 @@ export default async function scrapeMatchLinks() {
 
   const urls: string[] = [];
 
-  const newUrls = await loadMatchLinks(page);
-  urls.push(...newUrls);
+  const currentPageUrls = await loadMatchLinks(page);
+  urls.push(...currentPageUrls);
   await goToNextPage(page);
   await closePage(context, browser);
 
