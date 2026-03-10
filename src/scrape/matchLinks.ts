@@ -60,10 +60,14 @@ async function loadMatchLinks(page: Page) {
     )
   );
 
+  const validUrls = allMatchesData
+    .filter((match) => match.time?.includes("h") && match.time?.includes("m"))
+    .map((match) => match.url);
+
   const shouldStop = allMatchesData.some(match => match.time?.includes("d"));
 
   return {
-    urls: allMatchesData.map((match) => match!.url),
+    urls: validUrls,
     shouldStop
   }
 };
