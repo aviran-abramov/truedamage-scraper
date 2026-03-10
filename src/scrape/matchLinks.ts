@@ -17,7 +17,10 @@ export default async function scrapeMatchLinks() {
   // Initialize
   const { browser, context, page } = await launchPage(matchesUrl);
 
-  const urls = await loadMatchLinks(page);
+  const urls: string[] = [];
+
+  const newUrls = await loadMatchLinks(page);
+  urls.push(...newUrls);
   await goToNextPage(page);
   await closePage(context, browser);
 
@@ -59,7 +62,7 @@ async function loadMatchLinks(page: Page) {
     )
   ).filter(Boolean);
 
-  return matchesArr.map((match) => match?.url);
+  return matchesArr.map((match) => match!.url);
 };
 
 async function goToNextPage(page: Page) {
