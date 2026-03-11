@@ -19,9 +19,12 @@ export default async function scrapeMatchLinks() {
 
   const urls: string[] = [];
 
-  const currentPage = await loadPageMatchLinks(page);
-  urls.push(...currentPage.urls);
-  await goToNextPage(page);
+  for (let i = 1; i <= 3; i++) {
+    const currentPage = await loadPageMatchLinks(page);
+    urls.push(...currentPage.urls);
+    if (i < 3) await goToNextPage(page, i + 1);
+  }
+
 
   await closePage(context, browser);
 
@@ -72,12 +75,12 @@ async function loadPageMatchLinks(page: Page) {
   }
 };
 
-async function goToNextPage(page: Page) {
+async function goToNextPage(page: Page, pageNumber: number) {
   const pagination = page.locator("nav[aria-label='pagination navigation']");
-  const paginationNextPageButton = pagination.locator(
-    "button[aria-label='Go to next page']"
-  );
+  const nextPageButton = pagination.locator(`button[aria-label="Go to page ${pageNumber}"]`);
 
-  await paginationNextPageButton.click();
-  await page.waitForTimeout(3000);
+  const currentUrl = page.url();
+  await nextPageButton.click();
+  await page.waitForFunction((url) => window.location.href !== url, currentUrl);
+  await page.waitForTimeout(2000)
 }
