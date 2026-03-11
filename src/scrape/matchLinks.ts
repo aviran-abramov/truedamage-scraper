@@ -78,7 +78,6 @@ async function goToNextPage(page: Page) {
     "button[aria-label='Go to next page']"
   );
 
-  await scrollDown(page, 2, 1500);
   await paginationNextPageButton.click();
   await page.waitForTimeout(3000);
 }
