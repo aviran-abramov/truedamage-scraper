@@ -78,13 +78,7 @@ async function goToNextPage(page: Page) {
     "button[aria-label='Go to next page']"
   );
 
-  try {
-    await scrollDown(page, 2, 1500);
-    await paginationNextPageButton.click();
-    // await page.waitForLoadState("networkidle"); worked and moved to page 2
-    const matchListIndicator = page.locator("span.MuiTypography-p3").first();
-    await matchListIndicator.waitFor();
-  } catch (error) {
-    console.log(error);
-  }
+  await scrollDown(page, 2, 1500);
+  await paginationNextPageButton.click();
+  await page.waitForTimeout(3000);
 }
