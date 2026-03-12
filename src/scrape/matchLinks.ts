@@ -10,7 +10,7 @@ import { closePage, launchPage } from "../lib/browser";
 // Loop pages to load urls, stop when link.time does not show live | time and does not have the letter d
 
 const baseUrl = "https://gosugamers.net";
-const matchesUrl = "https://www.gosugamers.net/counterstrike/matches";
+const matchesUrl = "https://www.gosugamers.net/matches";
 
 export default async function scrapeMatchLinks() {
   // Initialize

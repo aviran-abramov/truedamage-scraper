@@ -1,5 +1,5 @@
 import { Locator, Page } from "playwright";
-import { getSheet } from "../lib/sheets";
+import { GoogleSheet } from "../lib/sheets";
 import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { closePage, launchPage } from "../lib/browser";
 import { scrollDown } from "../lib/pageUtils";
@@ -43,7 +43,9 @@ export default async function scrapeMatch(
     };
 
     console.log(matchData);
-    const sheet = await getSheet();
+    const spreadSheet = new GoogleSheet();
+    const sheet = await spreadSheet.loadSheet();
+
     await sheet.addRow({
       "Team A Name": matchData.teamAName,
       "Team B Name": matchData.teamBName,
