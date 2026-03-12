@@ -1,6 +1,5 @@
 import { Page } from "playwright";
 import { closePage, launchPage } from "../lib/browser";
-import { scrollDown } from "../lib/pageUtils";
 
 // TODOS
 
@@ -11,7 +10,7 @@ import { scrollDown } from "../lib/pageUtils";
 // Loop pages to load urls, stop when link.time does not show live | time and does not have the letter d
 
 const baseUrl = "https://gosugamers.net";
-const matchesUrl = "https://www.gosugamers.net/matches";
+const matchesUrl = "https://www.gosugamers.net/counterstrike/matches";
 
 export default async function scrapeMatchLinks() {
   // Initialize
@@ -19,10 +18,18 @@ export default async function scrapeMatchLinks() {
 
   const urls: string[] = [];
 
-  for (let i = 1; i <= 3; i++) {
+  let currentPageNumber = 1;
+
+  while (true) {
     const currentPage = await loadPageMatchLinks(page);
     urls.push(...currentPage.urls);
-    if (i < 3) await goToNextPage(page, i + 1);
+
+    if (currentPage.shouldStop) {
+      break;
+    }
+
+    currentPageNumber++;
+    await goToNextPage(page, currentPageNumber)
   }
 
 
