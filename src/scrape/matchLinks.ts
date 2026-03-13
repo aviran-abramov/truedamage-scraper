@@ -13,17 +13,12 @@ const baseUrl = "https://gosugamers.net";
 const matchesUrl = "https://www.gosugamers.net/matches";
 
 export default async function scrapeMatchLinks() {
-  // Initialize
   const { browser, context, page } = await launchPage(matchesUrl);
 
   const matchUrls = await extractNewUrls(page);
 
   await closePage(context, browser);
 
-  if (matchUrls.length === 0) {
-    console.log(`No upcoming matches found within 24 hours`);
-    return [];
-  }
   console.log(`Match links extracted. ${matchUrls.length} matches found.`);
 
   return matchUrls;
