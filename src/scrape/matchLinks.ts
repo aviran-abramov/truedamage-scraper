@@ -1,15 +1,7 @@
 import { Page } from "playwright";
 import { closePage, launchPage } from "../lib/browser";
+import { BASE_URL } from "../lib/constants";
 
-// TODOS
-
-// 1.
-// Check if 0m means 1h 0m or just 1h in upcoming time
-
-// 2.
-// Loop pages to load urls, stop when link.time does not show live | time and does not have the letter d
-
-const baseUrl = "https://gosugamers.net";
 const matchesUrl = "https://www.gosugamers.net/matches";
 
 export default async function scrapeMatchLinks() {
@@ -38,7 +30,7 @@ async function loadPageMatchLinks(page: Page) {
   const allMatchesData = (
     await Promise.all(
       matchLocatorArr.map(async (match) => {
-        const url = `${baseUrl}${await match.getAttribute("href")}`;
+        const url = `${BASE_URL}${await match.getAttribute("href")}`;
         const time = await match
           .locator("p.MuiTypography-body1")
           .last()
