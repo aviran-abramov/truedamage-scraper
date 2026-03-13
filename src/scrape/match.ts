@@ -11,12 +11,6 @@ export default async function scrapeMatch(
     // Initializing
     const { browser, context, page } = await launchPage(matchUrl);
 
-    // Tournament name
-    const matchTitle = page.locator("h1.MuiTypography-t2");
-    const tournamentNameFinal =
-      (await matchTitle.locator("a.MuiTypography-inherit").textContent()) ||
-      "NOT FOUND";
-
     const teamsData = await extractTeamData(page);
     const matchFormatData = await extractMatchInfo(page);
 
@@ -27,7 +21,7 @@ export default async function scrapeMatch(
     const matchData = {
       teamAName: teamsData[0].name,
       teamBName: teamsData[1].name,
-      tournament: tournamentNameFinal,
+      tournament: matchFormatData.tournament,
       bestOf: matchFormatData.bestOf,
       status: matchFormatData.status,
       date: matchFormatData.date,
@@ -136,6 +130,12 @@ async function extractMatchInfo(page: Page): Promise<Format> {
     .filter({ hasText: "Live Score" });
   const vsContainer = matchPreviewContainer.locator(".MuiGrid-grid-lg-3");
 
+  // Tournament name
+  const matchTitle = page.locator("h1.MuiTypography-t2");
+  const tournamentNameFinal =
+    (await matchTitle.locator("a.MuiTypography-inherit").textContent()) ||
+    "NOT FOUND";
+
   // Best of
   const bestOfData =
     (await vsContainer.locator(".MuiTypography-p3").textContent()) ||
@@ -159,6 +159,7 @@ async function extractMatchInfo(page: Page): Promise<Format> {
   const timeFinal = dateTimeArr?.[1]?.trim() ?? "NOT FOUND";
 
   return {
+    tournament: tournamentNameFinal || "NOT FOUND",
     bestOf: bestOf || "NOT FOUND",
     status: status || "NOT FOUND",
     date: dateFinal,

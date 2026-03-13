@@ -5,6 +5,7 @@ export interface Team {
 }
 
 export interface Format {
+  tournament: string;
   bestOf: string;
   status: string;
   date: string;
