@@ -11,16 +11,13 @@ export default async function scrapeMatch(
     // Initializing
     const { browser, context, page } = await launchPage(matchUrl);
 
-    // Main content
-    const teamContainers = page.locator('a[href*="/teams/"]');
-
     // Tournament name
     const matchTitle = page.locator("h1.MuiTypography-t2");
     const tournamentNameFinal =
       (await matchTitle.locator("a.MuiTypography-inherit").textContent()) ||
       "NOT FOUND";
 
-    const teamsData = await extractTeamData(teamContainers);
+    const teamsData = await extractTeamData(page);
     const matchFormatData = await extractMatchFormat(page);
 
     await scrollDown(page, 4, 1000);
@@ -77,7 +74,9 @@ export default async function scrapeMatch(
   }
 }
 
-async function extractTeamData(teamContainers: Locator): Promise<Team[]> {
+async function extractTeamData(page: Page): Promise<Team[]> {
+  const teamContainers = page.locator('a[href*="/teams/"]');
+
   // Team Containers
   const teamAContainer = teamContainers.first();
   const teamBContainer = teamContainers.last();
