@@ -18,7 +18,7 @@ export default async function scrapeMatch(
       "NOT FOUND";
 
     const teamsData = await extractTeamData(page);
-    const matchFormatData = await extractMatchFormat(page);
+    const matchFormatData = await extractMatchInfo(page);
 
     await scrollDown(page, 4, 1000);
 
@@ -129,7 +129,7 @@ async function extractTeamData(page: Page): Promise<Team[]> {
   ];
 }
 
-async function extractMatchFormat(page: Page): Promise<Format> {
+async function extractMatchInfo(page: Page): Promise<Format> {
   // Containers
   const matchPreviewContainer = page
     .locator(".MuiCard-root")
