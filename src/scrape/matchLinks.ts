@@ -16,33 +16,17 @@ export default async function scrapeMatchLinks() {
   // Initialize
   const { browser, context, page } = await launchPage(matchesUrl);
 
-  const urls: string[] = [];
-
-  let currentPageNumber = 1;
-
-  while (true) {
-    const currentPage = await loadPageMatchLinks(page);
-    urls.push(...currentPage.urls);
-
-    if (currentPage.shouldStop) {
-      break;
-    }
-
-    currentPageNumber++;
-    await goToNextPage(page, currentPageNumber)
-  }
-
+  const matchUrls = await extractNewUrls(page);
 
   await closePage(context, browser);
 
-  if (urls.length === 0) {
+  if (matchUrls.length === 0) {
     console.log(`No upcoming matches found within 24 hours`);
     return [];
   }
+  console.log(`Match links extracted. ${matchUrls.length} matches found.`);
 
-  console.log(`Match links extracted. ${urls.length} matches found.`);
-
-  return urls;
+  return matchUrls;
 }
 
 async function loadPageMatchLinks(page: Page) {
@@ -90,4 +74,23 @@ async function goToNextPage(page: Page, pageNumber: number) {
   await nextPageButton.click();
   await page.waitForFunction((url) => window.location.href !== url, currentUrl);
   await page.waitForTimeout(2000)
+}
+
+async function extractNewUrls(page: Page) {
+  let currentPageNumber = 1;
+  const urls: string[] = [];
+
+  while (true) {
+    const currentPage = await loadPageMatchLinks(page);
+    urls.push(...currentPage.urls);
+
+    if (currentPage.shouldStop) {
+      break;
+    }
+
+    currentPageNumber++;
+    await goToNextPage(page, currentPageNumber)
+  }
+
+  return urls;
 }
