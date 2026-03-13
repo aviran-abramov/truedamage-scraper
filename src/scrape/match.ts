@@ -15,8 +15,8 @@ export default async function scrapeMatch(
     const matchFormatData = await extractMatchInfo(page);
 
     await scrollDown(page, 4, 1000);
-
     const scores = await extractCommonMatchesScores(page);
+
 
     const matchData = {
       teamAName: teamsData[0].name,
@@ -32,25 +32,6 @@ export default async function scrapeMatch(
       teamBRank: teamsData[1].rank || "NOT FOUND",
       scores,
     };
-
-    console.log(matchData);
-    const spreadSheet = new GoogleSheet();
-    const sheet = await spreadSheet.loadSheet();
-
-    await sheet.addRow({
-      "Team A Name": matchData.teamAName,
-      "Team B Name": matchData.teamBName,
-      Tournament: matchData.tournament,
-      "Best Of": matchData.bestOf,
-      Status: matchData.status,
-      Date: matchData.date,
-      Time: matchData.time,
-      "Team A Country Code": matchData.teamACountryCode,
-      "Team B Country Code": matchData.teamBCountryCode,
-      "Team A Rank": matchData.teamARank,
-      "Team B Rank": matchData.teamBRank,
-      Scores: matchData.scores.join(", "),
-    });
 
     // Finish
     await closePage(context, browser);
