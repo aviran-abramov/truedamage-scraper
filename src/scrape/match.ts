@@ -1,5 +1,4 @@
-import { Locator, Page } from "playwright";
-import { GoogleSheet } from "../lib/sheets";
+import { Page } from "playwright";
 import { MatchInfo, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { closePage, launchPage } from "../lib/browser";
 import { scrollDown } from "../lib/pageUtils";
@@ -8,7 +7,6 @@ export default async function scrapeMatch(
   matchUrl: string
 ): Promise<ScrapeMatchResult<Match>> {
   try {
-    // Initializing
     const { browser, context, page } = await launchPage(matchUrl);
 
     const teamsData = await extractTeamData(page);
@@ -16,7 +14,6 @@ export default async function scrapeMatch(
 
     await scrollDown(page, 4, 1000);
     const scores = await extractCommonMatchesScores(page);
-
 
     const matchData = {
       teamAName: teamsData[0].name,
@@ -33,7 +30,6 @@ export default async function scrapeMatch(
       scores,
     };
 
-    // Finish
     await closePage(context, browser);
 
     return {
@@ -42,6 +38,7 @@ export default async function scrapeMatch(
     };
   } catch (error) {
     console.error(error);
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "ERROR",
