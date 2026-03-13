@@ -4,7 +4,7 @@ export interface Team {
   rank: number;
 }
 
-export interface Format {
+export interface MatchInfo {
   tournament: string;
   bestOf: string;
   status: string;

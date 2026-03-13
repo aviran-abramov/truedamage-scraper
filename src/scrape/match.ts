@@ -1,6 +1,6 @@
 import { Locator, Page } from "playwright";
 import { GoogleSheet } from "../lib/sheets";
-import { Format, Match, ScrapeMatchResult, Team } from "../lib/types";
+import { MatchInfo, Match, ScrapeMatchResult, Team } from "../lib/types";
 import { closePage, launchPage } from "../lib/browser";
 import { scrollDown } from "../lib/pageUtils";
 
@@ -123,7 +123,7 @@ async function extractTeamData(page: Page): Promise<Team[]> {
   ];
 }
 
-async function extractMatchInfo(page: Page): Promise<Format> {
+async function extractMatchInfo(page: Page): Promise<MatchInfo> {
   // Containers
   const matchPreviewContainer = page
     .locator(".MuiCard-root")
