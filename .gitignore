@@ -5,3 +5,5 @@ dist/
 .DS_Store
 screenshot.png
 /src/generated/prisma
+.claude/
+.vscode/
